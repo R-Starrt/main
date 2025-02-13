@@ -1,0 +1,86 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galileo Design - Voting</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Public+Sans:wght@400;500;700;900&display=swap">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body class="bg-slate-50 font-['Public_Sans','Noto_Sans',sans-serif]">
+  <div class="min-h-screen flex flex-col items-center justify-center">
+    <header class="flex items-center justify-center border-b border-[#e7edf4] w-full py-3">
+      <h2 class="text-lg font-bold">Dashboard</h2>
+    </header>
+
+    <main class="flex flex-col items-center w-full max-w-xl py-5">
+      <div class="w-full bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center">Vote your best staff</h1>
+        <p class="text-sm text-[#49719c] text-center">You have only 1 vote</p>
+        <div class="flex flex-wrap justify-center gap-3 py-4">
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Cilo</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Agung</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Jawir</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Ireng</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Budi</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Siti</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Rina</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Dika</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Rudi</button>
+          <button class="vote-option flex items-center justify-center rounded-xl h-8 px-4 bg-[#e7edf4] text-sm font-medium">Tini</button>
+        </div>
+        <div class="py-4">
+          <label for="reason" class="block text-sm font-medium text-gray-700">Alasan memilih kandidat</label>
+          <textarea id="reason" rows="3" class="mt-2 p-2 w-full border rounded-md focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button class="cancel-btn flex items-center justify-center rounded-xl h-10 px-4 bg-transparent text-sm font-bold">Cancel</button>
+          <button class="submit-btn flex items-center justify-center rounded-xl h-10 px-4 bg-[#0b6fda] text-white text-sm font-bold">Vote</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const voteOptions = document.querySelectorAll('.vote-option');
+      const submitBtn = document.querySelector('.submit-btn');
+      const cancelBtn = document.querySelector('.cancel-btn');
+      const reasonInput = document.getElementById('reason');
+      let selectedVote = null;
+
+      voteOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          voteOptions.forEach(opt => opt.classList.remove('bg-[#0b6fda]', 'text-white'));
+          option.classList.add('bg-[#0b6fda]', 'text-white');
+          selectedVote = option.textContent;
+        });
+      });
+
+      submitBtn.addEventListener('click', () => {
+        if (selectedVote && reasonInput.value.trim()) {
+          alert(`You voted for: ${selectedVote}\nReason: ${reasonInput.value}`);
+          fetch('/api/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ vote: selectedVote, reason: reasonInput.value }),
+          })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        } else {
+          alert('Please select a candidate and provide a reason!');
+        }
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        voteOptions.forEach(opt => opt.classList.remove('bg-[#0b6fda]', 'text-white'));
+        selectedVote = null;
+        reasonInput.value = '';
+      });
+    });
+  </script>
+</body>
+</html>
